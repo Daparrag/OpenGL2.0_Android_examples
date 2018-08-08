@@ -17,13 +17,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float [] wordMatrix = new float[16];
     private final float [] viewMatrix = new float[16];
-    private final float [] projMatrix = new float[16];
-
-
-    private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
-    private final float[] mViewMatrix = new float[16];
-    private final float[] mRotationMatrix = new float[16];
+    private final float[] mMVPMatrix = new float[16];
+
+
+    private final float[] XrotationMatrix = new float[16];
+    private final float[] YrotationMatrix = new float[16];
+
     private float mAngle;
 
 
@@ -38,8 +38,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         final float right = ratio;
         final float bottom = -1.0f;
         final float top = 1.0f;
-        final float near = 4.0f;
-        final float far = 10.0f;
+        final float near = 2.0f;
+        final float far = 1000.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
@@ -51,14 +51,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
         // Position the eye in front of the origin.
-        final float eyeX = 5.0f;
-        final float eyeY = 5.0f;
-        final float eyeZ = -0.5f;
+        final float eyeX = 0.0f;
+        final float eyeY = 0.0f;
+        final float eyeZ = -8.0f;
 
         // We are looking toward the distance
         final float lookX = 0.0f;
         final float lookY = 0.0f;
-        final float lookZ = -5.0f;
+        final float lookZ = 0.0f;
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
         final float upX = 0.0f;
@@ -73,28 +73,27 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(viewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
 
-
-
-
-
-
         mCube = new Cube();
     }
 
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-        float[] scratch = new float[16];
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
         // Set the identity Matrix
-        Matrix.setIdentityM(wordMatrix,0);
-        Matrix.translateM(wordMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(wordMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        Matrix.setIdentityM(XrotationMatrix,0);
+        Matrix.setIdentityM(YrotationMatrix,0);
+        Matrix.rotateM(XrotationMatrix,0,angleInDegrees/2, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(YrotationMatrix,0,angleInDegrees/2, 0.0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(wordMatrix,0,XrotationMatrix,0,YrotationMatrix,0);
+       // Matrix.translateM(wordMatrix, 0, 0.0f, 0.0f, -5.0f);
+
+
+
+
 
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix

@@ -14,7 +14,6 @@ public class Triangle {
     private final int mProgram;
     private int mPositionHandle;
     private int mColorHandle;
-    private int mMVPMatrixHandle;
     private final int BYTES_PER_ELEMENT = 4;
 
 
